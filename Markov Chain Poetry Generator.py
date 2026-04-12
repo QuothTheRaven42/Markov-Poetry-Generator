@@ -9,7 +9,7 @@ print(colored("---------------MARKOV CHAIN POETRY GENERATOR---------------",
 def main(poem=""):
     quadruplets = []
 
-    with open("poetry_lines.csv", encoding="utf-8") as f:
+    with open("poetry_lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
 
     for line in poetry_lines:
