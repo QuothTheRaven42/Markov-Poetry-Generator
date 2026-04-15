@@ -37,9 +37,8 @@ You will be prompted to enter the first word of your line. If the word isn't fou
 |--------|--------|
 | 1 | Append the line to your poem and generate another |
 | 2 | Retry the current line |
-| 3 | Print the completed poem and quit |
-| 4 | Save the completed poem to a `.txt` file and quit |
-| 5 | Quit |
+| 3 | Save the completed poem to a `.txt` file and quit |
+| 4 | Quit |
 
 ## Notes
 
