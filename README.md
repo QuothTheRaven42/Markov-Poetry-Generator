@@ -28,7 +28,7 @@ The generator reads from a file called `poetry_lines.txt` in the same directory 
 ## Usage
 
 ```
-python markov.py
+python "Markov Chain Poetry Generator.py"
 ```
 
 You will be prompted to enter the first word of your line. If the word isn't found in the corpus, you'll be asked to try again. After each line is generated you can:
