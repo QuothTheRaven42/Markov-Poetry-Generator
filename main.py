@@ -1,6 +1,16 @@
 import random
 from termcolor import colored
 
+print(
+    colored(
+        "---------------MARKOV CHAIN POETRY GENERATOR---------------",
+        "blue",
+        "on_grey",
+        attrs=["bold"],
+        force_color=True,
+    )
+)
+
 
 def clean_poem(poem: str) -> str:
     # Trim whitespace, fix lowercase "i", collapse double spaces, and close with a period
@@ -52,16 +62,6 @@ def save_poem(final_poem: str, enjoy: str):
 
 
 def main(poem=""):
-    print(
-        colored(
-            "---------------MARKOV CHAIN POETRY GENERATOR---------------",
-            "blue",
-            "on_grey",
-            attrs=["bold"],
-            force_color=True,
-        )
-    )
-
     # Load the poetry corpus used to build the Markov chain
     with open("poetry_lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
