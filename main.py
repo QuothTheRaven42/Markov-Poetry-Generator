@@ -3,6 +3,7 @@ from termcolor import colored
 
 
 def clean_poem(poem: str) -> str:
+    # Trim whitespace, fix lowercase "i", collapse double spaces, and close with a period
     return poem.strip().replace(" i ", " I ").replace("i'", "I'").replace("  ", " ") + "."
 
 
@@ -11,33 +12,37 @@ def create_quads(poetry_lines: list) -> list:
     quadruplets = []
     for line in poetry_lines:
 
-        # split a corpus sentence into individual words
+        # Normalize each word to lowercase and strip punctuation
         words = [w.lower().replace(".", "") for w in line.split()]
 
-        # stagger the start of each quad throughout the sentence
+        # Slide a 4-word window across the line to generate all possible quadruplets
         quadruplets.extend(words[i : i + 4] for i in range(len(words) - 3))
 
     return quadruplets
 
 
 def create_line(quadruplets: list, word: str) -> str:
-    this_line = ""
+    """Build a single poem line by chaining together quadruplets via Markov-style traversal."""
+    new_line = ""
     for index in range(5):
-        # append next quads to the sentence
+        # Find all quadruplets that begin with the current word
         quads = [quad for quad in quadruplets if quad[0] == word]
         if quads:
             chosen_quad = random.choice(quads)
             if index == 0:
-                this_line += " ".join(chosen_quad)
+                # First quad: include all four words
+                new_line += " ".join(chosen_quad)
             else:
-                # don't add first word if it's not the first quad so the word doesn't repeat
-                this_line += " ".join(chosen_quad[1:])
+                # Subsequent quads: skip the first word to avoid repetition at the join
+                new_line += " ".join(chosen_quad[1:])
+            # The last word of the chosen quad becomes the seed for the next iteration
             word = chosen_quad[3]
-            this_line += " "
-    return this_line.strip()
+            new_line += " "
+    return new_line.strip()
 
 
 def save_poem(final_poem: str, enjoy: str):
+    # Prompt for a title, save the poem to a .txt file, and confirm to the user
     title = input("\nWhat do you want to name this poem? ").strip()
     filename = title + ".txt"
     with open(filename, "w") as file:
@@ -57,46 +62,51 @@ def main(poem=""):
         )
     )
 
+    # Load the poetry corpus used to build the Markov chain
     with open("poetry_lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
 
     quadruplets = create_quads(poetry_lines)
 
-    # always ask for the first word of each line
+    # Prompt the user for a seed word to begin the generated line
     word = input("What should the first word of this line be? ").lower().strip()
     print()
 
-    # reset input if no quad starts with their word
+    # Reject any seed word that doesn't appear at the start of a quadruplet
     while not any(quad[0] == word for quad in quadruplets):
         word = input("Word not found in corpus. Try again: ").lower().strip()
 
-    this_line = create_line(quadruplets, word)
+    new_line = create_line(quadruplets, word)
 
-    finalized_line = this_line.capitalize().strip()
-    print(finalized_line + "\n")
+    finalized_line = new_line.capitalize()
+    print(f"{finalized_line}\n")
 
     enjoy = "***********ENJOY YOUR NEW POEM!***********"
     choice = "_"
-    while choice not in ["1", "2", "3", "4", "5"]:
+    while choice not in ["1", "2", "3", "4"]:
         choice = input("""Do you want to:
         (1) Append to your poem?
         (2) Retry this line?
         (3) Print final poem and quit?
-        (4) Quit? """).strip()
+        (4) Print and quit? """).strip()
 
         match choice:
             case "1":
+                # Add the new line to the poem and recurse to generate the next line
                 poem += "\n" + finalized_line
-                print(poem + "\n")
+                print(f"{poem}\n")
                 main(poem)
             case "2":
-                print(poem + "\n")
+                # Discard this line and recurse to try again with the existing poem
+                print(f"{poem}\n")
                 main(poem)
             case "3":
+                # Finalize, clean, and display the complete poem without saving
                 poem += "\n" + finalized_line
                 final_poem = clean_poem(poem)
                 print(f"\n{final_poem}\n{enjoy}")
             case "4":
+                # Finalize and display, then exit
                 poem += "\n" + finalized_line
                 final_poem = clean_poem(poem)
                 print(f"\n{final_poem}\n{enjoy}")
@@ -107,11 +117,3 @@ def main(poem=""):
 
 if __name__ == "__main__":
     main()
-
-
-"""
-Planned Improvements:
-The recursive main(poem) calls are the most significant issue:
-It also re-reads and rebuilds quadruplets from the file on every call, which is unnecessary work. 
-A while loop would handle the poem-building more cleanly.
-"""
