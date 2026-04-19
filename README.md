@@ -4,7 +4,7 @@ A command-line poetry generator that creates original lines from a custom corpus
 
 ## Features
 
-- Generates poetry from a text corpus of prose lines
+- Generates poetry from a text corpus of sentences
 - Builds overlapping 4-word sequences from the corpus
 - Lets the user choose the starting word for each generated line
 - Supports building a poem incrementally, one line at a time
@@ -80,6 +80,3 @@ The particular joy for years hoping to be
 A darkened window opening into rain
 The river knew the shape of every silence
 ```
-
-## Future Improvements
-- Package the project with tests and a cleaner CLI structure
