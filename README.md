@@ -80,6 +80,3 @@ The particular joy for years hoping to be
 A darkened window opening into rain
 The river knew the shape of every silence
 ```
-
-## Future Improvements
-- Package the project with tests and a cleaner CLI structure
