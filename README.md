@@ -1,14 +1,26 @@
 # Markov Chain Poetry Generator
 
-A command-line tool that generates original poetry lines using a Markov chain algorithm trained on a custom corpus of poetry. The generator builds word sequences (quadruplets) from the corpus and chains them together based on your chosen starting word, producing unpredictable but corpus-flavored lines.
+A command-line poetry generator that creates original lines from a custom corpus of poetry using a loose Markov-style chaining system. The program builds overlapping 4-word sequences from the corpus and links them together from a user-chosen starting word, producing language that is often surprising, dreamlike, and flavored by the source material.
 
 ## Features
 
-- Generates lines by chaining 4-word sequences drawn from a poetry corpus
-- Interactive prompt lets you choose the first word of each line
-- Build a multi-line poem incrementally, one line at a time
-- Print your finished poem to the terminal or save it as a `.txt` file
-- Colored terminal header via `termcolor`
+- Generates poetry from a text corpus of prose-poetry-style lines
+- Builds overlapping 4-word sequences from the corpus
+- Lets the user choose the starting word for each generated line
+- Supports building a poem incrementally, one line at a time
+- Can print the final poem to the terminal or save it as a `.txt` file
+- Includes a colored CLI header using `termcolor`
+
+## Design & Technical Choices
+
+Standard n-gram Markov chains require massive text corpora to avoid dead-ending, which makes them difficult to use for small, specialized poetry collections. 
+
+To solve this and encourage more surreal, poetic leaps, this generator uses a custom overlapping strategy:
+1. It breaks the source text into 4-word chunks (quadruplets).
+2. It transitions between chunks by matching the **last word** of the current chunk to the **first word** of the next available chunk. 
+
+This hybrid approach preserves brief moments of original phrasing (the 4-word chunks) while creating abrupt, surprising associative jumps between them—perfect for generating poetry rather than strict, coherent prose.
+
 
 ## Requirements
 
@@ -23,7 +35,9 @@ pip install termcolor
 
 ## Setup
 
-The generator reads from a file called `poetry_lines.txt` in the same directory as the script. Each line in the file should be a line of poetry from your corpus. The broader and more varied the corpus, the more interesting the output.
+The generator reads from a file called `poetry_lines.txt` in the same directory as the script. 
+
+Each line in the file should be a line of poetry from your corpus. The broader and more varied the corpus, the more interesting the output.
 
 ## Usage
 
@@ -37,8 +51,8 @@ You will be prompted to enter the first word of your line. If the word isn't fou
 |--------|--------|
 | 1 | Append the line to your poem and generate another |
 | 2 | Retry the current line |
-| 3 | Save the completed poem to a `.txt` file and quit |
-| 4 | Quit |
+| 3 | Print the completed poem and quit |
+| 4 | Save the completed poem to a `.txt` file and quit |
 
 ## Notes
 
@@ -59,3 +73,18 @@ Do you want to:
     (2) Retry this line?
     ...
 ```
+
+### Example poem
+
+```
+The particular joy for years hoping to be
+A darkened window opening into rain
+The river knew the shape of every silence
+```
+
+## Future Improvements
+• Add alternate chaining modes for stricter or looser generation
+• Improve punctuation cleaning and formatting
+• Add corpus statistics
+• Support reproducible output via random seed
+• Package the project with tests and a cleaner CLI structure
