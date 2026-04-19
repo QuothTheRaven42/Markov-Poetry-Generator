@@ -4,7 +4,6 @@ import re
 from datetime import datetime
 
 """
-I chose a looser transition rule on purpose. 
 Since the corpus is relatively small and the goal is poetic surprise rather than strict linguistic coherence, 
 one-word transitions produce more varied and interesting output while avoiding frequent dead ends.
 """

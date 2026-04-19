@@ -1,2 +1,5 @@
-termcolor==2.5.0
-pytest
+# Runtime
+termcolor
+
+# Development
+pytest==9.0.3
