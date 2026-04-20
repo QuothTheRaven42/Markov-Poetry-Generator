@@ -79,6 +79,16 @@ You will be prompted to enter the first word of your line. If the word isn't fou
 
 ## Example Output
 ```
+---------------MARKOV CHAIN POETRY GENERATOR---------------
+Loading corpus...
+Corpus loaded:
+- 543,283 lines
+- 8,062,205 total words
+- 185,831 unique words
+- 2.3% unique-word ratio
+
+Creating ngrams, please wait...
+Building model: 100%|██████████| 543283/543283 [00:07<00:00, 71330.22it/s]
 What should the first word of this line be? the
 
 The particular joy for years hoping to be
