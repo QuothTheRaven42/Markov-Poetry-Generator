@@ -108,8 +108,12 @@ def create_line(ngram_dict: dict[tuple, list], word: str) -> str:
     new_line = ""
 
     # Collect all keys whose first word matches the seed, then pick one at random.
-    # This avoids any O(n) scan — key lookup is O(1) per step.
     matching_keys = [k for k in ngram_dict if k[0] == word]
+
+    # If no matching keys, return empty string
+    if not matching_keys:
+        return ""
+
     word_triple = random.choice(matching_keys)
 
     for index in range(GRAMS_PER_LINE):

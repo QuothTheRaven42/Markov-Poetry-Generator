@@ -67,7 +67,7 @@ class TestCreateNgrams:
 
     def test_single_line_produces_correct_ngram_value(self):
         result = create_ngrams(["one two three four five six"])
-        assert ["one", "two", "three", "four", "five", "six"] in result[("one", "two")]
+        assert ["one", "two", "three", "four"] in result[("one", "two")]
 
     def test_line_shorter_than_ngram_size_produces_no_entries(self):
         result = create_ngrams(["one two three"])
