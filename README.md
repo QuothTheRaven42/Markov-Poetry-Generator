@@ -1,11 +1,5 @@
 # Markov Chain Poetry Generator
-
 A command-line poetry generator implementing a Markov-chain text generation system.
-
-## Architecture:
-- N-grams: 4-word sequences extracted from the input corpus
-- Keys: 2-word tuples indexing into the n-gram dictionary
-- Line generation: Chains 6 n-grams with 2-word overlaps
 
 The program constructs a dictionary mapping 2-word prefixes to lists of matching 
 4-word n-grams. During generation, it performs a random walk through this graph:
@@ -18,6 +12,10 @@ The overlapping structure ensures local coherence while allowing global variatio
 producing output that preserves syntactic patterns from the source corpus while 
 generating novel combinations.
 
+## Default Architecture:
+- N-grams: 4-word sequences extracted from the input corpus
+- Keys: 2-word tuples indexing into the n-gram dictionary
+- Line generation: Chains 6 n-grams with 2-word overlaps
 
 ## Features
 - Generates poetry from a text corpus of lines
