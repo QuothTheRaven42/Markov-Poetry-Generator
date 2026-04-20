@@ -1,6 +1,7 @@
 import pytest
+from collections import defaultdict
 from unittest.mock import patch, mock_open
-from main import clean_poem, create_quads, create_line, save_poem, prompt_seed_word
+from main import clean_poem, create_ngrams, create_line, save_poem, prompt_seed_word
 
 
 # ─────────────────────────────────────────────
@@ -42,7 +43,6 @@ class TestCleanPoem:
             assert "  " not in line
 
     def test_empty_string_returns_empty(self):
-        # clean_poem guards with `if poem:` so empty input stays empty
         result = clean_poem("")
         assert result == ""
 
@@ -52,45 +52,52 @@ class TestCleanPoem:
 
 
 # ─────────────────────────────────────────────
-# create_quads
+# create_ngrams
 # ─────────────────────────────────────────────
 
-class TestCreateQuads:
+class TestCreateNgrams:
 
-    def test_single_line_four_words_produces_one_quad(self):
-        result = create_quads(["one two three four"])
-        assert result == [["one", "two", "three", "four"]]
+    def test_returns_a_dict(self):
+        result = create_ngrams(["one two three four five six"])
+        assert isinstance(result, dict)
 
-    def test_single_line_five_words_produces_two_quads(self):
-        result = create_quads(["one two three four five"])
-        assert result == [
-            ["one", "two", "three", "four"],
-            ["two", "three", "four", "five"],
-        ]
+    def test_single_line_produces_correct_key(self):
+        result = create_ngrams(["one two three four five six"])
+        assert ("one", "two") in result
 
-    def test_line_shorter_than_four_words_produces_no_quads(self):
-        result = create_quads(["one two three"])
-        assert result == []
+    def test_single_line_produces_correct_ngram_value(self):
+        result = create_ngrams(["one two three four five six"])
+        assert ["one", "two", "three", "four", "five", "six"] in result[("one", "two")]
 
-    def test_multiple_lines_combined(self):
-        lines = ["one two three four", "five six seven eight"]
-        result = create_quads(lines)
-        assert ["one", "two", "three", "four"] in result
-        assert ["five", "six", "seven", "eight"] in result
+    def test_line_shorter_than_ngram_size_produces_no_entries(self):
+        result = create_ngrams(["one two three"])
+        assert len(result) == 0
+
+    def test_multiple_lines_produce_separate_keys(self):
+        lines = ["one two three four five six", "seven eight nine ten eleven twelve"]
+        result = create_ngrams(lines)
+        assert ("one", "two") in result
+        assert ("seven", "eight") in result
 
     def test_words_are_lowercased(self):
-        result = create_quads(["The River Flows Onward"])
-        assert result == [["the", "river", "flows", "onward"]]
+        result = create_ngrams(["The River Flows Onward Into Night"])
+        assert ("the", "river") in result
 
-    def test_periods_stripped_from_words(self):
-        result = create_quads(["end. of. the. line."])
-        for quad in result:
-            for word in quad:
+    def test_punctuation_stripped_from_keys(self):
+        result = create_ngrams(["end. of. the. line. right. here."])
+        for key in result:
+            for word in key:
                 assert "." not in word
 
-    def test_empty_corpus_returns_empty_list(self):
-        result = create_quads([])
-        assert result == []
+    def test_empty_corpus_returns_empty_dict(self):
+        result = create_ngrams([])
+        assert result == {}
+
+    def test_sliding_window_produces_multiple_keys(self):
+        # A 7-word line with N_GRAM_SIZE=6 should produce two overlapping ngrams
+        result = create_ngrams(["one two three four five six seven"])
+        assert ("one", "two") in result
+        assert ("two", "three") in result
 
 
 # ─────────────────────────────────────────────
@@ -100,27 +107,31 @@ class TestCreateQuads:
 class TestCreateLine:
 
     def setup_method(self):
-        self.quads = [
-            ["the", "river", "runs", "deep"],
-            ["river", "runs", "deep", "tonight"],
-            ["deep", "tonight", "the", "stars"],
-            ["tonight", "the", "stars", "burn"],
+        # Build a small dict that mirrors what create_ngrams would produce
+        self.ngram_dict = defaultdict(list)
+        ngrams = [
+            ["the", "river", "runs", "deep", "tonight", "burning"],
+            ["river", "runs", "deep", "tonight", "burning", "bright"],
+            ["deep", "tonight", "burning", "bright", "the", "stars"],
+            ["tonight", "burning", "bright", "the", "stars", "fall"],
         ]
+        for ngram in ngrams:
+            self.ngram_dict[tuple(ngram[:2])].append(ngram)
 
     def test_returns_a_string(self):
-        result = create_line(self.quads, "the")
+        result = create_line(self.ngram_dict, "the")
         assert isinstance(result, str)
 
     def test_line_starts_with_seed_word(self):
-        result = create_line(self.quads, "the")
+        result = create_line(self.ngram_dict, "the")
         assert result.lower().startswith("the")
 
     def test_line_is_not_empty(self):
-        result = create_line(self.quads, "river")
+        result = create_line(self.ngram_dict, "river")
         assert len(result.strip()) > 0
 
     def test_seed_word_not_in_corpus_produces_empty_line(self):
-        result = create_line(self.quads, "zzz")
+        result = create_line(self.ngram_dict, "zzz")
         assert result == ""
 
 
@@ -131,24 +142,27 @@ class TestCreateLine:
 class TestPromptSeedWord:
 
     def setup_method(self):
-        self.quads = [
-            ["the", "river", "runs", "deep"],
-            ["river", "runs", "deep", "tonight"],
+        self.ngram_dict = defaultdict(list)
+        ngrams = [
+            ["the", "river", "runs", "deep", "tonight", "burning"],
+            ["river", "runs", "deep", "tonight", "burning", "bright"],
         ]
+        for ngram in ngrams:
+            self.ngram_dict[tuple(ngram[:2])].append(ngram)
 
     def test_valid_word_on_first_try(self):
         with patch("builtins.input", return_value="the"):
-            result = prompt_seed_word(self.quads)
+            result = prompt_seed_word(self.ngram_dict)
         assert result == "the"
 
     def test_retries_until_valid_word_found(self):
         with patch("builtins.input", side_effect=["zzz", "xyz", "river"]):
-            result = prompt_seed_word(self.quads)
+            result = prompt_seed_word(self.ngram_dict)
         assert result == "river"
 
     def test_returns_lowercased_word(self):
         with patch("builtins.input", return_value="THE"):
-            result = prompt_seed_word(self.quads)
+            result = prompt_seed_word(self.ngram_dict)
         assert result == "the"
 
 
