@@ -1,5 +1,21 @@
 # Markov Chain Poetry Generator
-A command-line poetry generator that creates original lines from a custom corpus of poetry using a Markov-style chaining system. The program builds overlapping n-gram sequences from the corpus and links them together from a user-chosen starting word, producing language that is often surprising, dreamlike, and flavored by the source material.
+A command-line poetry generator implementing a Markov-chain text generation system.
+
+The program constructs a dictionary mapping 2-word prefixes to lists of matching 
+4-word n-grams. During generation, it performs a random walk through this graph:
+starting from a user-specified seed word, it selects a random 2-word key beginning 
+with that word, retrieves a matching 4-gram, appends the final 2 words to the output, 
+then advances the key to the last 2 words of the selected n-gram. This process 
+repeats for 6 iterations, yielding lines of approximately 14 words (4 + 5×2).
+
+The overlapping structure ensures local coherence while allowing global variation, 
+producing output that preserves syntactic patterns from the source corpus while 
+generating novel combinations.
+
+## Default Architecture:
+- **N-grams**: 4-word sequences extracted from the input corpus
+- **Keys**: 2-word tuples indexing into the n-gram dictionary
+- **Line generation**: Chains 6 n-grams with 2-word overlaps
 
 ## Features
 - Generates poetry from a text corpus of lines
@@ -29,6 +45,7 @@ The two constants at the top of the script control the character of the output:
 ## Requirements
 - Python 3.10+
 - [tqdm](https://pypi.org/project/tqdm/)
+- a poetry_lines.txt file for your corpus (not provided)
 
 Install the dependency with:
 ```
@@ -62,6 +79,16 @@ You will be prompted to enter the first word of your line. If the word isn't fou
 
 ## Example Output
 ```
+---------------MARKOV CHAIN POETRY GENERATOR---------------
+Loading corpus...
+Corpus loaded:
+- 543,283 lines
+- 8,062,205 total words
+- 185,831 unique words
+- 2.3% unique-word ratio
+
+Creating ngrams, please wait...
+Building model: 100%|██████████| 543283/543283 [00:07<00:00, 71330.22it/s]
 What should the first word of this line be? the
 
 The particular joy for years hoping to be
@@ -74,10 +101,10 @@ Do you want to:
 
 ### Example poem
 ```
-The route in her that was also its own answer I'd been rehearsing for years and
-Whenever she felt herself and updated them needing to stop looking for it couldn't quite reach
-So precisely that I realized I'd been on before in the room had been composing for
-Quite believing in itself that had given it back as old enough now in the process.
+Your duty to remain between us as we layered every inch in a fine
+Frenzy as he tried to jolt his readers to be removed of course...but in
+Case using a peculiar sort of person this prince was with him since the
+Oldest bowler hat and a handkerchief that had preceded it and so almost everything.
 ```
 
 ---
