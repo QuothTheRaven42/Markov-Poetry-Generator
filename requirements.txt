@@ -1,5 +1,6 @@
 # Runtime
 termcolor
+tqdm==4.67.3
 
 # Development
 pytest==9.0.3
