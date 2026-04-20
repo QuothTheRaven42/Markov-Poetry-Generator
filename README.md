@@ -13,9 +13,9 @@ producing output that preserves syntactic patterns from the source corpus while
 generating novel combinations.
 
 ## Default Architecture:
-- N-grams: 4-word sequences extracted from the input corpus
-- Keys: 2-word tuples indexing into the n-gram dictionary
-- Line generation: Chains 6 n-grams with 2-word overlaps
+- **N-grams**: 4-word sequences extracted from the input corpus
+- **Keys**: 2-word tuples indexing into the n-gram dictionary
+- **Line generation**: Chains 6 n-grams with 2-word overlaps
 
 ## Features
 - Generates poetry from a text corpus of lines
