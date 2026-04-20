@@ -45,6 +45,7 @@ The two constants at the top of the script control the character of the output:
 ## Requirements
 - Python 3.10+
 - [tqdm](https://pypi.org/project/tqdm/)
+- a poetry_lines.txt file for your corpus (not provided)
 
 Install the dependency with:
 ```
