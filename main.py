@@ -14,7 +14,7 @@ KEY_SIZE = 2
 N_GRAM_SIZE = 4
 
 # 6 chained 4-grams with 2-word overlaps.
-GRAMS_PER_LINE = 8
+GRAMS_PER_LINE = 6
 
 ENJOY = "***********ENJOY YOUR NEW POEM!***********"
 
@@ -51,18 +51,18 @@ def load_file() -> list[str]:
 
 
 def create_ngrams(poetry_lines: list[str]) -> dict[tuple, list]:
-    """Slide a 6-word window across each line to build the Markov transition table.
+    """Slide an n-gram window across each line to build the Markov transition table.
 
-    Each 6-word chunk (n-gram) is stored under a 3-word tuple key representing
-    its first three words. This allows O(1) lookup during line generation rather
+    Each word chunk is stored under a tuple key representing
+    This allows O(1) lookup during line generation rather
     than scanning the full model on every step.
 
     Lines are processed individually so n-grams never cross line boundaries,
-    which would introduce nonsensical transitions between unrelated source lines.
+    which would introduce nonsensical transitions between sentences.
 
     Returns:
         A defaultdict mapping (word1, word2, word3) tuples to lists of
-        matching 6-word n-grams.
+        matching n-grams.
     """
     print("Creating ngrams, please wait...")
     ngram_dict = defaultdict(list)
@@ -83,7 +83,7 @@ def create_ngrams(poetry_lines: list[str]) -> dict[tuple, list]:
 def prompt_seed_word(ngram_dict: dict[tuple, list]) -> str:
     """Prompt the user for a seed word and validate it against the model.
 
-    Only words that appear as the first element of a 3-word key are accepted.
+    Only words that appear as the first element of an n-gram key are accepted.
     This guarantees at least one valid n-gram exists to start the chain —
     a word that only appears mid-line has no key to chain from.
     """
@@ -98,12 +98,12 @@ def prompt_seed_word(ngram_dict: dict[tuple, list]) -> str:
 
 
 def create_line(ngram_dict: dict[tuple, list], word: str) -> str:
-    """Chain n-grams together via 3-word overlaps to build a single poem line.
+    """Chain n-grams together via n-gra, overlaps to build a single poem line.
 
-    Starting from the seed word, a random 3-word key beginning with that word
+    Starting from the seed word, a random key beginning with that word
     is chosen. Each step looks up the current key in the model, picks a random
-    matching n-gram, appends the new words (skipping the 3 already written),
-    then slides the key forward by 3 words.
+    matching n-gram, appends the new words (skipping the ones already written),
+    then slides the key forward.
     """
     new_line = ""
 
@@ -249,9 +249,6 @@ accept the corpus filename as a command-line argument via argparse rather than h
 - Multiple seed words:
 allow the user to specify two or three seed words to give more control over where the line begins, 
 making use of the full key tuple rather than just the first word.
-
-- Line count control:
-let the user specify how many lines to generate automatically before reviewing, rather than confirming after each one.
 
 - Streamlit GUI:
 a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
