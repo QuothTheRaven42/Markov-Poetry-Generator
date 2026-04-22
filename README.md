@@ -45,7 +45,7 @@ The two constants at the top of the script control the character of the output:
 ## Requirements
 - Python 3.10+
 - [tqdm](https://pypi.org/project/tqdm/)
-- a poetry_lines.txt file for your corpus (not provided, but scraping and cleaning scripts are provided to make it a breeze)
+- a lines.txt file for your corpus (not provided)
 
 Install the dependency with:
 ```
@@ -53,9 +53,11 @@ pip install tqdm
 ```
 
 ## Setup
-The generator reads from a file called `poetry_lines.txt` in the same directory as the script.
-
-Each line in the file should be a line of poetry or prose from your corpus. 100,000 lines seems to be the sweet spot, as having an excessive amount takes away from the poeticism.
+- The generator reads from a file called `lines.txt` in the same directory as the script.
+- Each line in the file should be a sentence from your corpus. 
+- 100,000-200,000 sentences seems to be the sweet spot (about 25 books), as having an excessive amount takes away from the poeticism.
+- Actual poetry doesn't work because each line is rarely a sentence.
+- lines.txt not provided, but scraping and cleaning scripts are provided to make it a breeze, as well as a script to find which book has a weird word in it so you can remove that book from your corpus.
 
 ## Usage
 ```
@@ -113,7 +115,7 @@ Oldest bowler hat and a handkerchief that had preceded it and so almost everythi
 Planned improvements and ideas for future versions:
 
 - **Model caching** — serialize the transition table to disk with `pickle` after the first build, and reload it on subsequent runs instead of rebuilding from scratch. Cache invalidation based on the corpus file's modification timestamp so stale caches are detected automatically.
-- **Configurable corpus path** — accept the corpus filename as a command-line argument via `argparse` rather than hardcoding `poetry_lines.txt`.
+- **Configurable corpus path** — accept the corpus filename as a command-line argument via `argparse` rather than hardcoding `lines.txt`.
 - **Multiple seed words** — allow the user to specify two or three seed words to give more control over where the line begins, making use of the full key tuple rather than just the first word.
 - **Line count control** — let the user specify how many lines to generate automatically before reviewing, rather than confirming after each one.
 - **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
