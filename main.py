@@ -19,10 +19,6 @@ GRAMS_PER_LINE = 6
 ENJOY = "***********ENJOY YOUR NEW POEM!***********"
 
 
-def print_header():
-    print("---------------MARKOV CHAIN POETRY GENERATOR---------------\n" "Loading corpus...")
-
-
 def load_file() -> list[str]:
     """Load the corpus from poetry_lines.txt and print a brief summary.
     Lines are kept intact here — splitting into words happens later in
@@ -31,23 +27,23 @@ def load_file() -> list[str]:
     with open("poetry_lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
 
-        # Flatten to a word list just for the stats printout.
-        # This is separate from the model-building pass in create_ngrams.
-        all_words = [
-            word.lower().strip('.,!?;:"\'()"') for line in poetry_lines for word in line.split()
-        ]
-        all_words = [word for word in all_words if word]
+    # Flatten to a word list just for the stats printout.
+    # This is separate from the model-building pass in create_ngrams.
+    all_words = [
+        word.lower().strip('.,!?;:"\'()"') for line in poetry_lines for word in line.split()
+    ]
+    all_words = [word for word in all_words if word]
 
-        total_words = len(all_words)
-        unique_words = len(set(all_words))
+    total_words = len(all_words)
+    unique_words = len(set(all_words))
 
-        print("Corpus loaded:")
-        print(f"- {len(poetry_lines):,} lines")
-        print(f"- {total_words:,} total words")
-        print(f"- {unique_words:,} unique words")
-        print(f"- {unique_words / total_words:.1%} unique-word ratio\n")
+    print("Corpus loaded:")
+    print(f"- {len(poetry_lines):,} lines")
+    print(f"- {total_words:,} total words")
+    print(f"- {unique_words:,} unique words")
+    print(f"- {unique_words / total_words:.1%} unique-word ratio\n")
 
-        return poetry_lines
+    return poetry_lines
 
 
 def create_ngrams(poetry_lines: list[str]) -> dict[tuple, list]:
@@ -98,7 +94,7 @@ def prompt_seed_word(ngram_dict: dict[tuple, list]) -> str:
 
 
 def create_line(ngram_dict: dict[tuple, list], word: str) -> str:
-    """Chain n-grams together via n-gra, overlaps to build a single poem line.
+    """Chain n-grams together, overlaps to build a single poem line.
 
     Starting from the seed word, a random key beginning with that word
     is chosen. Each step looks up the current key in the model, picks a random
@@ -182,7 +178,7 @@ def save_poem(final_poem: str):
 
 
 def main():
-    print_header()
+    print("---------------MARKOV CHAIN POETRY GENERATOR---------------\nLoading corpus...")
 
     try:
         poetry_lines = load_file()
@@ -197,8 +193,6 @@ def main():
         word = prompt_seed_word(ngram_dict)
         new_line = create_line(ngram_dict, word)
 
-        # capitalize() uppercases only the first character, unlike title()
-        # which would capitalize every word.
         finalized_line = new_line.capitalize()
         print(f"{finalized_line}\n")
 
