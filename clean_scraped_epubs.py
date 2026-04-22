@@ -48,9 +48,17 @@ def no_asterisks(line: list[str]) -> bool:
     return False
 
 
+def no_ellipses(line: list[str]) -> bool:
+    for token in line:
+        if "..." in token:
+            return True
+    return False
+
+
 def should_remove(line: str) -> bool:
     cleaned = []
-    for token in line:
+    tokens = line.split()
+    for token in tokens:
         cleaned.append(clean_token(token))
     if not cleaned:
         return True
@@ -63,6 +71,8 @@ def should_remove(line: str) -> bool:
     if no_vowels(cleaned):
         return True
     if no_asterisks(cleaned):
+        return True
+    if no_ellipses(cleaned):
         return True
     return False
 

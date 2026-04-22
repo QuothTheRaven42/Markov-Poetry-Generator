@@ -7,20 +7,20 @@ from tqdm import tqdm
 # Controls how many words form the lookup key in the transition table.
 # Smaller keys (2) mean more matches per lookup — wilder, more surprising output.
 # Larger keys (3+) produce more coherent phrases but start to echo source lines.
-KEY_SIZE = 2
+KEY_SIZE = 3
 
 # Shorter n-grams produce wilder output; longer ones risk more dead ends and start to reproduce source lines.
-N_GRAM_SIZE = 4
+N_GRAM_SIZE = 5
 
 # 6 chained 4-grams with 2-word overlaps.
-GRAMS_PER_LINE = 6
+GRAMS_PER_LINE = 8
 
 ENJOY = "***********ENJOY YOUR NEW POEM!***********"
 
 
 def load_file() -> list[str]:
     """Load the corpus from poetry_lines.txt and print a brief summary."""
-    with open("poetry_lines.txt", encoding="utf-8") as f:
+    with open("lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
 
     return poetry_lines
@@ -155,7 +155,7 @@ def save_poem(final_poem: str) -> str:
 
     with open(filename, "w") as file:
         file.write(final_poem)
-        
+
     return filename
 
 

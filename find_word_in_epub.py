@@ -3,7 +3,7 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 
-SEARCH_TERM = "word"
+SEARCH_TERM = "twencen"
 EPUB_DIR = "C:\\Users\\david\\OneDrive\\Documents\\ebooks"  # Change this to your epub folder path
 
 
