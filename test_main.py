@@ -1,7 +1,7 @@
 import pytest
 from collections import defaultdict
 from unittest.mock import patch, mock_open
-from main import clean_poem, create_ngrams, create_line, save_poem, prompt_seed_word
+from main import clean_poem, create_ngrams, create_line, save_poem, prompt_seed_word, KEY_SIZE, N_GRAM_SIZE
 
 
 # ─────────────────────────────────────────────
@@ -56,18 +56,21 @@ class TestCleanPoem:
 # ─────────────────────────────────────────────
 
 class TestCreateNgrams:
-
     def test_returns_a_dict(self):
         result = create_ngrams(["one two three four five six"])
         assert isinstance(result, dict)
 
     def test_single_line_produces_correct_key(self):
-        result = create_ngrams(["one two three four five six"])
-        assert ("one", "two") in result
+        line = "one two three four five six"
+        result = create_ngrams([line])
+        assert tuple(line.split()[:KEY_SIZE]) in result
 
     def test_single_line_produces_correct_ngram_value(self):
-        result = create_ngrams(["one two three four five six"])
-        assert ["one", "two", "three", "four"] in result[("one", "two")]
+        line = "one two three four five six"
+        result = create_ngrams([line])
+        words = line.split()
+        key = tuple(words[:KEY_SIZE])
+        assert words[:N_GRAM_SIZE] in result[key]
 
     def test_line_shorter_than_ngram_size_produces_no_entries(self):
         result = create_ngrams(["one two three"])
@@ -76,12 +79,13 @@ class TestCreateNgrams:
     def test_multiple_lines_produce_separate_keys(self):
         lines = ["one two three four five six", "seven eight nine ten eleven twelve"]
         result = create_ngrams(lines)
-        assert ("one", "two") in result
-        assert ("seven", "eight") in result
+        assert tuple(lines[0].split()[:KEY_SIZE]) in result
+        assert tuple(lines[1].split()[:KEY_SIZE]) in result
 
     def test_words_are_lowercased(self):
-        result = create_ngrams(["The River Flows Onward Into Night"])
-        assert ("the", "river") in result
+        line = "The River Flows Onward Into Night"
+        result = create_ngrams([line])
+        assert tuple(line.lower().split()[:KEY_SIZE]) in result
 
     def test_punctuation_stripped_from_keys(self):
         result = create_ngrams(["end. of. the. line. right. here."])
@@ -94,10 +98,11 @@ class TestCreateNgrams:
         assert result == {}
 
     def test_sliding_window_produces_multiple_keys(self):
-        # A 7-word line with N_GRAM_SIZE=6 should produce two overlapping ngrams
-        result = create_ngrams(["one two three four five six seven"])
-        assert ("one", "two") in result
-        assert ("two", "three") in result
+        line = "one two three four five six seven"
+        result = create_ngrams([line])
+        words = line.split()
+        assert tuple(words[0:KEY_SIZE]) in result
+        assert tuple(words[1:1 + KEY_SIZE]) in result
 
 
 # ─────────────────────────────────────────────
