@@ -55,7 +55,7 @@ pip install tqdm
 ## Setup
 The generator reads from a file called `poetry_lines.txt` in the same directory as the script.
 
-Each line in the file should be a line of poetry or prose from your corpus. The broader and more varied the corpus, the more interesting the output.
+Each line in the file should be a line of poetry or prose from your corpus. 100,000 lines seems to be the sweet spot, as having an excessive amount takes away from the poeticism.
 
 ## Usage
 ```
