@@ -23,13 +23,16 @@ def load_file() -> list[str]:
     with open("poetry_lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
 
+    return poetry_lines
+
+
+def print_corpus_summary(poetry_lines):
     # Flatten to a word list just for the stats printout.
     # This is separate from the model-building pass in create_ngrams.
     all_words = [
         word.lower().strip('.,!?;:"\'()"') for line in poetry_lines for word in line.split()
     ]
     all_words = [word for word in all_words if word]
-
     total_words = len(all_words)
     unique_words = len(set(all_words))
 
@@ -38,8 +41,6 @@ def load_file() -> list[str]:
     print(f"- {total_words:,} total words")
     print(f"- {unique_words:,} unique words")
     print(f"- {unique_words / total_words:.1%} unique-word ratio\n")
-
-    return poetry_lines
 
 
 def create_ngrams(poetry_lines: list[str]) -> dict[tuple, list]:
@@ -104,7 +105,6 @@ def create_line(ngram_dict: dict[tuple, list], word: str) -> str:
         return ""
 
     word_triple = random.choice(matching_keys)
-
     for index in range(GRAMS_PER_LINE):
         grams = ngram_dict[word_triple]
         if not grams:
@@ -113,7 +113,6 @@ def create_line(ngram_dict: dict[tuple, list], word: str) -> str:
             break
 
         chosen_gram = random.choice(grams)
-
         if index == 0:
             # First iteration: write the full 6-word n-gram.
             new_line += " ".join(chosen_gram)
@@ -141,7 +140,6 @@ def clean_poem(poem: str) -> str:
         cleaned_lines.append(line)
 
     poem = "\n".join(cleaned_lines)
-
     # Ensure the poem ends with terminal punctuation so it feels complete.
     if poem and poem[-1] not in ".!?":
         poem += "."
@@ -166,19 +164,19 @@ def main():
 
     try:
         poetry_lines = load_file()
+        print_corpus_summary(poetry_lines)
     except FileNotFoundError:
         print("Error: poetry_lines.txt was not found.")
         return
 
+    poem = ""
     ngram_dict = create_ngrams(poetry_lines)
-
     while True:
         word = prompt_seed_word(ngram_dict)
         new_line = create_line(ngram_dict, word)
         finalized_line = new_line.capitalize()
         print(f"{finalized_line}\n")
 
-        poem = ""
         while True:
             choice = input("""Do you want to:
             (1) Append to your poem and continue?
