@@ -1,12 +1,20 @@
 import pytest
 from collections import defaultdict
 from unittest.mock import patch, mock_open
-from main import clean_poem, create_ngrams, create_line, save_poem, prompt_seed_word, KEY_SIZE, N_GRAM_SIZE
-
+from main import (
+    clean_poem,
+    create_ngrams,
+    create_line,
+    save_poem,
+    prompt_seed_word,
+    KEY_SIZE,
+    N_GRAM_SIZE,
+)
 
 # ─────────────────────────────────────────────
 # clean_poem
 # ─────────────────────────────────────────────
+
 
 class TestCleanPoem:
 
@@ -55,6 +63,7 @@ class TestCleanPoem:
 # create_ngrams
 # ─────────────────────────────────────────────
 
+
 class TestCreateNgrams:
     def test_returns_a_dict(self):
         result = create_ngrams(["one two three four five six"])
@@ -102,12 +111,13 @@ class TestCreateNgrams:
         result = create_ngrams([line])
         words = line.split()
         assert tuple(words[0:KEY_SIZE]) in result
-        assert tuple(words[1:1 + KEY_SIZE]) in result
+        assert tuple(words[1 : 1 + KEY_SIZE]) in result
 
 
 # ─────────────────────────────────────────────
 # create_line
 # ─────────────────────────────────────────────
+
 
 class TestCreateLine:
 
@@ -144,6 +154,7 @@ class TestCreateLine:
 # prompt_seed_word
 # ─────────────────────────────────────────────
 
+
 class TestPromptSeedWord:
 
     def setup_method(self):
@@ -175,19 +186,18 @@ class TestPromptSeedWord:
 # save_poem
 # ─────────────────────────────────────────────
 
+
 class TestSavePoem:
 
     def test_file_is_written_with_correct_content(self):
         m = mock_open()
-        with patch("builtins.input", return_value="test_poem"), \
-             patch("builtins.open", m):
+        with patch("builtins.input", return_value="test_poem"), patch("builtins.open", m):
             save_poem("the river runs deep.")
         m().write.assert_called_once_with("the river runs deep.")
 
     def test_filename_uses_title(self):
         m = mock_open()
-        with patch("builtins.input", return_value="my poem"), \
-             patch("builtins.open", m):
+        with patch("builtins.input", return_value="my poem"), patch("builtins.open", m):
             save_poem("some content")
         opened_filename = m.call_args[0][0]
         assert "my_poem" in opened_filename
