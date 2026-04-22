@@ -6,11 +6,10 @@ from tqdm import tqdm
 
 # Controls how many words form the lookup key in the transition table.
 # Smaller keys (2) mean more matches per lookup — wilder, more surprising output.
-# Larger keys (3+) produce more coherent phrases but start to echo source lines verbatim.
+# Larger keys (3+) produce more coherent phrases but start to echo source lines.
 KEY_SIZE = 2
 
-# Shorter n-grams produce wilder output; longer ones risk
-# more dead ends and start to just reproduce source lines verbatim.
+# Shorter n-grams produce wilder output; longer ones risk more dead ends and start to reproduce source lines.
 N_GRAM_SIZE = 4
 
 # 6 chained 4-grams with 2-word overlaps.
