@@ -20,10 +20,7 @@ ENJOY = "***********ENJOY YOUR NEW POEM!***********"
 
 
 def load_file() -> list[str]:
-    """Load the corpus from poetry_lines.txt and print a brief summary.
-    Lines are kept intact here — splitting into words happens later in
-    create_ngrams, where individual line boundaries matter for the model.
-    """
+    """Load the corpus from poetry_lines.txt and print a brief summary."""
     with open("poetry_lines.txt", encoding="utf-8") as f:
         poetry_lines = f.readlines()
 
@@ -50,11 +47,8 @@ def create_ngrams(poetry_lines: list[str]) -> dict[tuple, list]:
     """Slide an n-gram window across each line to build the Markov transition table.
 
     Each word chunk is stored under a tuple key representing
-    This allows O(1) lookup during line generation rather
-    than scanning the full model on every step.
-
-    Lines are processed individually so n-grams never cross line boundaries,
-    which would introduce nonsensical transitions between sentences.
+    This allows O(1) lookup during line generation.
+    Lines are processed individually so n-grams never cross line boundaries.
 
     Returns:
         A defaultdict mapping (word1, word2, word3) tuples to lists of
@@ -137,11 +131,7 @@ def create_line(ngram_dict: dict[tuple, list], word: str) -> str:
 
 
 def clean_poem(poem: str) -> str:
-    """Light post-processing on the assembled poem before display or save.
-
-    Kept minimal on purpose — heavy cleanup would mask the raw character
-    of the Markov output, which is part of the aesthetic.
-    """
+    """Light post-processing on the assembled poem before display or save."""
     lines = poem.strip().splitlines()
     cleaned_lines = []
 
@@ -160,21 +150,16 @@ def clean_poem(poem: str) -> str:
     return poem
 
 
-def save_poem(final_poem: str):
-    """Prompt for a title and write the finished poem to a timestamped .txt file.
-
-    The timestamp suffix prevents overwrites when saving multiple poems
-    in a single session.
-    """
+def save_poem(final_poem: str) -> str:
+    """Prompt for a title and write the finished poem to a timestamped .txt file."""
     title = input("\nWhat do you want to name this poem? ").strip()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
     filename = f"{title.strip().replace(' ', '_').lower()}_{timestamp}.txt"
 
     with open(filename, "w") as file:
         file.write(final_poem)
 
-    print(f"Saved as '{filename}'")
+    return filename
 
 
 def main():
@@ -186,23 +171,21 @@ def main():
         print("Error: poetry_lines.txt was not found.")
         return
 
-    poem = ""
     ngram_dict = create_ngrams(poetry_lines)
 
     while True:
         word = prompt_seed_word(ngram_dict)
         new_line = create_line(ngram_dict, word)
-
         finalized_line = new_line.capitalize()
         print(f"{finalized_line}\n")
 
+        poem = ""
         while True:
             choice = input("""Do you want to:
             (1) Append to your poem and continue?
             (2) Retry this line?
             (3) Print final poem and quit?
             (4) Save and quit? """).strip()
-
             match choice:
                 case "1":
                     poem += "\n" + finalized_line
@@ -219,7 +202,8 @@ def main():
                 case "4":
                     poem += "\n" + finalized_line
                     final_poem = clean_poem(poem)
-                    save_poem(final_poem)
+                    filename = save_poem(final_poem)
+                    print(f"Saved as '{filename}'")
                     print(f"\n{final_poem}\n{ENJOY}")
                     return
                 case _:
