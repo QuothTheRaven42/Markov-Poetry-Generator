@@ -26,7 +26,7 @@ def load_file() -> list[str]:
     return poetry_lines
 
 
-def print_corpus_summary(poetry_lines):
+def corpus_summary(poetry_lines):
     # Flatten to a word list just for the stats printout.
     # This is separate from the model-building pass in create_ngrams.
     all_words = [
@@ -155,7 +155,7 @@ def save_poem(final_poem: str) -> str:
 
     with open(filename, "w") as file:
         file.write(final_poem)
-
+        
     return filename
 
 
@@ -164,7 +164,7 @@ def main():
 
     try:
         poetry_lines = load_file()
-        print_corpus_summary(poetry_lines)
+        corpus_summary(poetry_lines)
     except FileNotFoundError:
         print("Error: poetry_lines.txt was not found.")
         return

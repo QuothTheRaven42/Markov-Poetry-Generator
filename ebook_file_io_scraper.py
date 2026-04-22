@@ -63,7 +63,7 @@ def run_extraction(txt_path: str, epub_folder: str):
                 new_sentences.append(sentence)
                 existing.add(sentence)
 
-    with open(txt_path, "a", encoding="utf-8") as f:
+    with open(txt_path, "w", encoding="utf-8") as f:
         for sentence in new_sentences:
             f.write(sentence + "\n")
 

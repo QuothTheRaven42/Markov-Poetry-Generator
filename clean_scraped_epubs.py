@@ -14,47 +14,55 @@ def clean_token(token: str) -> str:
     return token.strip(".,!?;:\"'()").lower()
 
 
-def has_digit(line: str) -> bool:
+def has_digit(line: list[str]) -> bool:
     return any(char.isdigit() for char in line)
 
 
-def has_standalone_roman(line: str) -> bool:
+def has_standalone_roman(line: list[str]) -> bool:
     """Match lines where a token is purely a Roman numeral (optionally with a period).
     Avoids nuking real words that happen to share letters like 'live' or 'mix'."""
-    for token in line.split():
-        token_clean = clean_token(token)
-        if token_clean and ROMAN_NUMERAL_TOKEN.fullmatch(token_clean):
+    for token in line:
+        if token and len(token) > 1 and ROMAN_NUMERAL_TOKEN.fullmatch(token):
             return True
     return False
 
 
-def remove_long_words(line: str) -> bool:
-    for token in line.split():
-        token_clean = clean_token(token)
-        if len(token_clean) > 19:
+def remove_long_words(line: list[str]) -> bool:
+    for token in line:
+        if len(token) > 19:
             return True
     return False
 
 
-def no_vowels(line: str) -> bool:
-    for token in line.split():
-        token_clean = clean_token(token)
-        if len(token_clean) > 2 and not any(char in "aeiou" for char in token_clean):
+def no_vowels(line: list[str]) -> bool:
+    for token in line:
+        if len(token) > 2 and not any(char in "aeiou" for char in token):
+            return True
+    return False
+
+
+def no_asterisks(line: list[str]) -> bool:
+    for token in line:
+        if any(char in '*' for char in token):
             return True
     return False
 
 
 def should_remove(line: str) -> bool:
-    stripped = line.strip()
-    if not stripped:
+    cleaned = []
+    for token in line:
+        cleaned.append(clean_token(token))
+    if not cleaned:
         return True
-    if has_digit(stripped):
+    if has_digit(cleaned):
         return True
-    if has_standalone_roman(stripped):
+    if has_standalone_roman(cleaned):
         return True
-    if remove_long_words(stripped):
+    if remove_long_words(cleaned):
         return True
-    if no_vowels(stripped):
+    if no_vowels(cleaned):
+        return True
+    if no_asterisks(cleaned):
         return True
     return False
 
