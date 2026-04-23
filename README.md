@@ -78,6 +78,7 @@ You will be prompted to enter the first word of your line. If the word isn't fou
 - Lowercase `i` is corrected to `I` in the final poem
 - Poems are saved to the directory where the script is run
 - Building the model on large corpora takes a moment — a progress bar is shown during this step
+- I do not condone copyright infringement using my scripts. Make sure you aren't sharing your corpus.
 
 ## Example Output
 ```
