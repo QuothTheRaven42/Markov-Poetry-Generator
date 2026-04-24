@@ -121,4 +121,4 @@ Oldest bowler hat and a handkerchief that had preceded it and so almost everythi
 - **Line count control** — let the user specify how many lines to generate automatically before reviewing, rather than confirming after each one.
 - **Adjustable constants at runtime** — expose `N_GRAM_SIZE`, `KEY_SIZE`, and `GRAMS_PER_LINE` as interactive prompts or flags so the output character can be tuned per session without editing the source file.
 ### Longer term considerations
-- **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
+- **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time. This would be a major refactoring as everything is currently geared towards the CLI.
