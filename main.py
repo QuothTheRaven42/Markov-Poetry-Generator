@@ -211,23 +211,24 @@ if __name__ == "__main__":
     main()
 
 """
-Under Development
+## Under Development
 
-- Model caching:
+- **Model caching**:
 Serialize the transition table to disk with pickle after the first build, 
 reload it on subsequent runs instead of rebuilding from scratch. 
 Cache invalidation based on the corpus file's modification timestamp so stale caches are detected automatically.
 
-- Configurable corpus path:
+- **Configurable corpus path**:
 accept the corpus filename as a command-line argument via argparse rather than hardcoding poetry_lines.txt.
 
-- Multiple seed words:
+- **Multiple seed words**:
 allow the user to specify two or three seed words to give more control over where the line begins, 
 making use of the full key tuple rather than just the first word.
 
-- Streamlit GUI:
-a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
-
-- Adjustable constants at runtime:
+- **Adjustable constants at runtime**:
 expose N_GRAM_SIZE, KEY_SIZE, and GRAMS_PER_LINE as interactive prompts or flags so the output character can be tuned per session without editing the source file.
+
+### Future considerations
+- **Streamlit GUI**:
+a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
 """
