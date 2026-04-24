@@ -113,11 +113,12 @@ Oldest bowler hat and a handkerchief that had preceded it and so almost everythi
 ---
 
 ## Under Development
-Planned improvements and ideas for future versions:
+###Planned improvements and ideas for future versions:
 
 - **Model caching** — serialize the transition table to disk with `pickle` after the first build, and reload it on subsequent runs instead of rebuilding from scratch. Cache invalidation based on the corpus file's modification timestamp so stale caches are detected automatically.
 - **Configurable corpus path** — accept the corpus filename as a command-line argument via `argparse` rather than hardcoding `lines.txt`.
 - **Multiple seed words** — allow the user to specify two or three seed words to give more control over where the line begins, making use of the full key tuple rather than just the first word.
 - **Line count control** — let the user specify how many lines to generate automatically before reviewing, rather than confirming after each one.
-- **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
 - **Adjustable constants at runtime** — expose `N_GRAM_SIZE`, `KEY_SIZE`, and `GRAMS_PER_LINE` as interactive prompts or flags so the output character can be tuned per session without editing the source file.
+### Longer term considerations
+- **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
