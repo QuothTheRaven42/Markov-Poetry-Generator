@@ -5,15 +5,12 @@ from collections import defaultdict
 from tqdm import tqdm
 
 # Controls how many words form the lookup key in the transition table.
-# Smaller keys (2) mean more matches per lookup — wilder, more surprising output.
-# Larger keys (3+) produce more coherent phrases but start to echo source lines.
-KEY_SIZE = 3
-
-# Shorter n-grams produce wilder output; longer ones risk more dead ends and start to reproduce source lines.
-N_GRAM_SIZE = 5
-
-# 6 chained 4-grams with 2-word overlaps.
-GRAMS_PER_LINE = 8
+KEY_SIZE = 4
+# Length of connecting word combinations
+# Shorter n-grams produce wilder output; longer ones risk more dead ends.
+N_GRAM_SIZE = 6
+# Words per line = GRAMS_PER_LINE + N_GRAM_SIZE - 1
+GRAMS_PER_LINE = 10
 
 ENJOY = "***********ENJOY YOUR NEW POEM!***********"
 
@@ -225,9 +222,12 @@ accept the corpus filename as a command-line argument via argparse rather than h
 allow the user to specify two or three seed words to give more control over where the line begins, 
 making use of the full key tuple rather than just the first word.
 
-- Streamlit GUI:
-a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
-
 - Adjustable constants at runtime:
 expose N_GRAM_SIZE, KEY_SIZE, and GRAMS_PER_LINE as interactive prompts or flags so the output character can be tuned per session without editing the source file.
+
+Future Considerations
+
+- Streamlit GUI:
+a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
+This would require a major refactoring, as everything is currently geared toward the CLI.
 """
