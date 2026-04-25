@@ -113,7 +113,7 @@ Oldest bowler hat and a handkerchief that had preceded it and so almost everythi
 ---
 
 ## Under Development
-###Planned improvements and ideas for future versions:
+### Planned improvements and ideas for future versions:
 
 - **Model caching** — serialize the transition table to disk with `pickle` after the first build, and reload it on subsequent runs instead of rebuilding from scratch. Cache invalidation based on the corpus file's modification timestamp so stale caches are detected automatically.
 - **Configurable corpus path** — accept the corpus filename as a command-line argument via `argparse` rather than hardcoding `lines.txt`.
