@@ -1,21 +1,21 @@
 # Markov Chain Poetry Generator
-A command-line poetry generator implementing a Markov-chain text generation system.
+A command-line poetry generator implementing a Markov-chain text generation system
 
-The program constructs a dictionary mapping 2-word prefixes to lists of matching 
-4-word n-grams. During generation, it performs a random walk through this graph:
-starting from a user-specified seed word, it selects a random 2-word key beginning 
-with that word, retrieves a matching 4-gram, appends the final 2 words to the output, 
-then advances the key to the last 2 words of the selected n-gram. This process 
-repeats for 6 iterations, yielding lines of approximately 14 words (4 + 5×2).
+The program constructs a dictionary mapping #-word prefixes to lists of matching 
+#-word n-grams. During generation, it performs a random walk through this graph:
+starting from a user-specified seed word, it selects a random #-word key beginning 
+with that word, retrieves a matching #-gram, appends the final # words to the output, 
+then advances the key to the last # words of the selected n-gram. This process 
+repeats for # iterations.
 
 The overlapping structure ensures local coherence while allowing global variation, 
 producing output that preserves syntactic patterns from the source corpus while 
 generating novel combinations.
 
 ## Default Architecture:
-- **Keys**: 3-word tuples indexing into the n-gram dictionary
-- **N-grams**: 4-word sequences extracted from the input corpus
-- **Line generation**: Chains 10 n-grams with 2-word overlaps
+- **Keys**: #-word tuples indexing into the n-gram dictionary, controlled by KEY_SIZE
+- **N-grams**: #-word sequences extracted from the input corpus, controlled by N_GRAM_SIZE
+- **Line generation**: Chains # n-grams with #-word overlaps, controlled by GRAMS_PER_LINE
 
 ## Features
 - Generates poetry from a text corpus of lines
@@ -78,6 +78,7 @@ You will be prompted to enter the first word of your line. If the word isn't fou
 - Lowercase `i` is corrected to `I` in the final poem
 - Poems are saved to the directory where the script is run
 - Building the model on large corpora takes a moment — a progress bar is shown during this step
+- I do not condone copyright infringement using my scripts. Make sure you aren't sharing your corpus.
 
 ## Example Output
 ```
@@ -112,11 +113,12 @@ Oldest bowler hat and a handkerchief that had preceded it and so almost everythi
 ---
 
 ## Under Development
-Planned improvements and ideas for future versions:
+### Planned improvements and ideas for future versions:
 
 - **Model caching** — serialize the transition table to disk with `pickle` after the first build, and reload it on subsequent runs instead of rebuilding from scratch. Cache invalidation based on the corpus file's modification timestamp so stale caches are detected automatically.
 - **Configurable corpus path** — accept the corpus filename as a command-line argument via `argparse` rather than hardcoding `lines.txt`.
 - **Multiple seed words** — allow the user to specify two or three seed words to give more control over where the line begins, making use of the full key tuple rather than just the first word.
 - **Line count control** — let the user specify how many lines to generate automatically before reviewing, rather than confirming after each one.
-- **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time.
 - **Adjustable constants at runtime** — expose `N_GRAM_SIZE`, `KEY_SIZE`, and `GRAMS_PER_LINE` as interactive prompts or flags so the output character can be tuned per session without editing the source file.
+### Long-term considerations
+- **Streamlit GUI** — a browser-based interface for the generator, making it accessible without the command line and allowing the poem to be displayed and edited in real time. This would be a major refactoring as everything is currently geared towards the CLI.
